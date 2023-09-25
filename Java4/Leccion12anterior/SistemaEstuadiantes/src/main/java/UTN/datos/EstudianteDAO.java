@@ -79,7 +79,7 @@ public class EstudianteDAO {
     public boolean agregarEstudiante(Estudiante estudiante){
         PreparedStatement ps;
         Connection con = getConnection();
-        String sql = "INSERT INTO estudiantes2023 (nombre, apellido, telefono, email) VALUES (?, ?, ?, ?))";
+        String sql = "INSERT INTO estudiantes2023 (nombre, apellido, telefono, email) VALUES (?, ?, ?, ?)";
         try{
             ps = con.prepareStatement(sql);
             ps.setString(1, estudiante.getNombre());
@@ -101,12 +101,55 @@ public class EstudianteDAO {
         return false;
     }//Fin Metodo agregarEstudiante()
 
+    //Modificar Estudiante
+    public boolean modificarEstudiante(Estudiante estudiante){
+        PreparedStatement ps;
+        Connection con = getConnection();
+        String sql = "UPDATE estudiantes2023 SET nombre=?, apellido=?, telefono=?, email=? WHERE idestudiantes2023=?";
+        try{
+            ps = con.prepareStatement(sql);
+            ps.setString(1, estudiante.getNombre());
+            ps.setString(2, estudiante.getApellido());
+            ps.setString(3, estudiante.getTelefono());
+            ps.setString(4, estudiante.getEmail());
+            ps.setInt(5,estudiante.getIdEstudiante());
+            ps.execute();
+            return true;//se encontro un registro
+        }catch(Exception e){
+            System.out.println("Ocurrio un error al Modificar estudiante: "+e.getMessage());
+        }//fin catch
+        finally{
+            try{
+                con.close(); //cerramos la conexion
+            }catch(Exception e){
+                System.out.println("Ocurrio un error al cerrar la conexion: "+e.getMessage());
+            }//fin catch
+        }//Fin finally
+        return false;
+    }//Fin método modificarEstudiante()
+
     public static void main(String[] args) {//main para ejcucion de pruebas
-        //Listar Estudiantes
         var estudianteDao= new EstudianteDAO();
+        //Modificar Estudiante
+        var estudianteModificado = new Estudiante(1,"Juan Carlos", "Juarez", "5544663321", "juan@mail.com");
+        var modificado = estudianteDao.modificarEstudiante(estudianteModificado);
+        if (modificado)
+            System.out.println("Estudiante modificado: "+estudianteModificado);
+        else
+            System.out.println("No se ha modificado el estudiante: "+estudianteModificado);
+
+        //Listar Estudiantes
         System.out.println("Listado de estudiantes: ");
         List<Estudiante> estudiantes =estudianteDao.listarEstudiantes();
         estudiantes.forEach(System.out::println);//funcion lambda para imprimir
+/*
+        //Agregar estudiante
+        var nuevoEstudiante = new Estudiante("Carlos", "Lara", "5495544223", "carlosL@mail.com");
+        var agregado = estudianteDao.agregarEstudiante(nuevoEstudiante);
+        if (agregado)
+            System.out.println("Estudiante agregado: "+nuevoEstudiante);
+        else
+            System.out.println("No se ha agregado el estudiante: "+nuevoEstudiante);
 
         //Buscar por id
         var estudiante1 = new Estudiante(1);
@@ -116,6 +159,7 @@ public class EstudianteDAO {
             System.out.println("Estudiante encontrado: "+estudiante1);
         else
             System.out.println("No se encontro el estudiante: "+estudiante1.getIdEstudiante());
+*/
 
     }//fin main para la ejecucion de pruebas
 
