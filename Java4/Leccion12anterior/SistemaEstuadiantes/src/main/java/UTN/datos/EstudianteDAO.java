@@ -127,10 +127,32 @@ public class EstudianteDAO {
         }//Fin finally
         return false;
     }//Fin método modificarEstudiante()
+    //Eliminar estudiante
+    public boolean eliminarEstudiante(Estudiante estudiante){
+        PreparedStatement ps;
+        Connection con = getConnection();
+        String sql = "DELETE FROM estudiantes2023 WHERE idestudiantes2023=?";
+        try{
+            ps = con.prepareStatement(sql);
+            ps.setInt(1,estudiante.getIdEstudiante());
+            ps.execute();
+            return true;//se encontro un registro
+        }catch(Exception e){
+            System.out.println("Ocurrio un error al Eliminar estudiante: "+e.getMessage());
+        }//fin catch
+        finally{
+            try{
+                con.close(); //cerramos la conexion
+            }catch(Exception e){
+                System.out.println("Ocurrio un error al cerrar la conexion: "+e.getMessage());
+            }//fin catch
+        }//Fin finally
+        return false;
+    }//Fin método eliminarEstudiante()
 
     public static void main(String[] args) {//main para ejcucion de pruebas
         var estudianteDao= new EstudianteDAO();
-        //Modificar Estudiante
+/*        //Modificar Estudiante
         var estudianteModificado = new Estudiante(1,"Juan Carlos", "Juarez", "5544663321", "juan@mail.com");
         var modificado = estudianteDao.modificarEstudiante(estudianteModificado);
         if (modificado)
@@ -138,11 +160,6 @@ public class EstudianteDAO {
         else
             System.out.println("No se ha modificado el estudiante: "+estudianteModificado);
 
-        //Listar Estudiantes
-        System.out.println("Listado de estudiantes: ");
-        List<Estudiante> estudiantes =estudianteDao.listarEstudiantes();
-        estudiantes.forEach(System.out::println);//funcion lambda para imprimir
-/*
         //Agregar estudiante
         var nuevoEstudiante = new Estudiante("Carlos", "Lara", "5495544223", "carlosL@mail.com");
         var agregado = estudianteDao.agregarEstudiante(nuevoEstudiante);
@@ -150,16 +167,30 @@ public class EstudianteDAO {
             System.out.println("Estudiante agregado: "+nuevoEstudiante);
         else
             System.out.println("No se ha agregado el estudiante: "+nuevoEstudiante);
+  */
 
-        //Buscar por id
+        //Eliminar estudiante con id 3
+        var estudianteEliminar = new Estudiante(4);
+        var eliminado = estudianteDao.eliminarEstudiante(estudianteEliminar);
+        if (eliminado)
+            System.out.println("Estudiante eliminado: "+estudianteEliminar);
+        else
+            System.out.println("No se eliminó el estudiante: "+estudianteEliminar.getIdEstudiante());
+
+        //Listar Estudiantes
+        System.out.println("Listado de estudiantes: ");
+        List<Estudiante> estudiantes =estudianteDao.listarEstudiantes();
+        estudiantes.forEach(System.out::println);//funcion lambda para imprimir
+
+       /* //Buscar por id
         var estudiante1 = new Estudiante(1);
         System.out.println("Estudiantes antes de la busqueda: "+estudiante1);
         var encontrado = estudianteDao.buscarEstudiantePorId(estudiante1);
         if (encontrado)
             System.out.println("Estudiante encontrado: "+estudiante1);
         else
-            System.out.println("No se encontro el estudiante: "+estudiante1.getIdEstudiante());
-*/
+            System.out.println("No se encontro el estudiante: "+estudiante1.getIdEstudiante());*/
+
 
     }//fin main para la ejecucion de pruebas
 
